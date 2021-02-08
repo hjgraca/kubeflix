@@ -1,5 +1,5 @@
 <p align="center">
-<img src="src/resources/main.png" width="300" alt="KUBEFLIX" />
+<img src="https://github.com/hjgraca/kubeflix/blob/main/resources/main.png" width="300" alt="KUBEFLIX" />
 </p>
 
 ## **KUBEFLIX** 
