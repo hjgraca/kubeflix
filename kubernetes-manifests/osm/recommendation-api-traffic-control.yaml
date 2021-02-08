@@ -1,0 +1,28 @@
+kind: TrafficTarget
+apiVersion: access.smi-spec.io/v1alpha2
+metadata:
+  name: recommendation-api
+spec:
+  destination:
+    kind: ServiceAccount
+    name: recommendation-api-service-account
+  rules:
+    - kind: HTTPRouteGroup
+      name: recommendation-api-service-routes
+      matches:
+        - recommendation-api
+  sources:
+    - kind: ServiceAccount
+      name: frontend-service-account
+---
+
+apiVersion: specs.smi-spec.io/v1alpha3
+kind: HTTPRouteGroup
+metadata:
+  name: recommendation-api-service-routes
+spec:
+  matches:
+    - name: recommendation-api
+      pathRegex: "/recommendations"
+      methods:
+      - GET

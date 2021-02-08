@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation-api
+  template:
+    metadata:
+      labels:
+        app: recommendation-api
+      # annotations:
+      #   "openservicemesh.io/sidecar-injection": "enabled"
+    spec:
+      serviceAccountName: recommendation-api-service-account
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: api
+        image: testacrdemo.azurecr.io/recommendation-api:0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MOVIE_API_URL
+          value: "http://movies-api"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+        # readinessProbe:
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        #   timeoutSeconds: 2
+        #   failureThreshold: 3
+        #   httpGet:
+        #     path: /healthx
+        #     port: 5000
+        # livenessProbe:
+        #   initialDelaySeconds: 5
+        #   timeoutSeconds: 2
+        #   periodSeconds: 10
+        #   httpGet:
+        #     path: /healthz
+        #     port: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendation-api
+spec:
+  selector:
+    app: recommendation-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+    name: recommendation-api-port

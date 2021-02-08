@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movies-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movies-api
+  template:
+    metadata:
+      labels:
+        app: movies-api
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "movies-api"
+        dapr.io/app-port: "80"
+        dapr.io/config: "daprconfig"
+    spec:
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: api
+        image: testacrdemo.azurecr.io/movies-api:0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "9555"
+        - name: ASPNETCORE_URLS
+          value: http://+:80
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+        readinessProbe:
+          initialDelaySeconds: 20
+          periodSeconds: 15
+          httpGet:
+            path: /health/ready
+            port: 80
+        livenessProbe:
+          initialDelaySeconds: 20
+          periodSeconds: 15
+          httpGet:
+            path: /health/live
+            port: 80

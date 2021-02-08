@@ -1,0 +1,271 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #111;
+  color: #fff;
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+}
+
+.lists {
+  margin-top: -150px;
+}
+
+footer {
+  margin: 50px 0;
+  text-align: center;
+}
+
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header {
+  position: fixed;
+  z-index: 999;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  background: transparent;
+  transition: all ease 0.5s;
+}
+
+a {
+  color: inherit;
+}
+
+header.black {
+  background: #141414;
+}
+.header--logo {
+  height: 25px;
+  color: #fff;
+  font-size: 15pt;
+  letter-spacing: 4px;
+  font-weight: bold;
+}
+
+.header--logo img {
+  height: 100%;
+}
+
+.header--user {
+  height: 35px;
+}
+
+.header--user img {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.featured {
+  height: 100vh;
+}
+
+.featured--vertical {
+  width: inherit;
+  height: inherit;
+  background: linear-gradient(to top, #111 10%, transparent);
+}
+
+.featured--horizontal {
+  width: inherit;
+  height: inherit;
+  background: linear-gradient(to right, #111 30%, transparent 70%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 30px;
+  padding-bottom: 150px;
+  padding-top: 70px;
+}
+
+.featured--name {
+  font-size: 60px;
+  font-weight: bold;
+}
+
+.featured--info {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.featured--points {
+  color: #46d369;
+}
+
+.featured--cast {
+  display: flex;
+}
+
+.MuiAvatar-root {
+  margin: 20px 20px;
+  height: 70px !important;
+  width: 70px !important;
+}
+
+.cast--name {
+  margin: 0px 18px;
+  font-size: 14px;
+}
+
+.cast--character {
+  margin: 0 18px;
+  font-size: 14px;
+  color: #999;
+}
+
+.featured--description {
+  margin-top: 15px;
+  font-size: 20px;
+  color: #999;
+  max-width: 40%;
+}
+
+.featured--buttons {
+  margin-top: 15px;
+}
+
+.featured--mylistbutton,
+.featured--watchbutton {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 12px 25px;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-right: 10px;
+  opacity: 1;
+  transition: all ease 0.2s;
+}
+
+.featured--mylistbutton:hover,
+.featured--watchbutton:hover {
+  opacity: 0.7;
+}
+.featured--watchbutton {
+  background-color: #fff;
+  color: #000;
+}
+
+.featured--mylistbutton {
+  background-color: #333;
+  color: #fff;
+}
+
+.featured--genres {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #999;
+}
+
+@media (max-width: 760px) {
+  .featured {
+    height: 90vh;
+  }
+  .featured--name {
+    font-size: 40px;
+  }
+  .featured--info {
+    font-size: 16px;
+  }
+  .featured--description {
+    font-size: 14px;
+    max-width: 100%;
+    margin-right: 30px;
+  }
+  .featured--mylistbutton,
+  .featured--watchbutton {
+    font-size: 10px;
+  }
+  .featured--genres {
+    font-size: 14px;
+  }
+}
+.movieRow {
+  margin-bottom: 30px;
+}
+
+.movieRow h2 {
+  margin: 0px 0px 0px 30px;
+}
+
+.movieRow--listarea {
+  overflow-x: hidden;
+  padding-left: 30px;
+}
+
+.movieRow--list {
+  transition: all ease 0.2s;
+}
+
+.movieRow--item {
+  display: inline-block;
+  width: 150px;
+  cursor: pointer;
+}
+
+.movieRow--item img {
+  width: 100%;
+  transform: scale(0.9);
+  transition: all ease 0.2s;
+}
+
+.movieRow--item img:hover {
+  transform: scale(1);
+}
+
+.movieRow-left,
+.movieRow-right {
+  position: absolute;
+  width: 40px;
+  height: 225px;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0;
+  transition: all ease 0.2s;
+}
+
+.movieRow-left {
+  left: 0;
+}
+
+.movieRow-right {
+  right: 0;
+}
+
+.movieRow:hover .movieRow-left,
+.movieRow:hover .movieRow-right {
+  opacity: 1;
+}
+
+@media (max-width: 760px) {
+  .movieRow-left,
+  .movieRow-right {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,29 @@
+kind: TrafficTarget
+apiVersion: access.smi-spec.io/v1alpha2
+metadata:
+  name: movies-api
+spec:
+  destination:
+    kind: ServiceAccount
+    name: movies-api-service-account
+  rules:
+    - kind: HTTPRouteGroup
+      name: movies-api-service-routes
+      matches:
+        - movies-api
+  sources:
+    - kind: ServiceAccount
+      name: frontend-service-account
+    - kind: ServiceAccount
+      name: recommendation-api-service-account
+---
+apiVersion: specs.smi-spec.io/v1alpha3
+kind: HTTPRouteGroup
+metadata:
+  name: movies-api-service-routes
+spec:
+  matches:
+    - name: movies-api
+      pathRegex: "/movies"
+      methods:
+      - GET
