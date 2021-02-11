@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basket-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: basket-api
+  template:
+    metadata:
+      labels:
+        app: basket-api
+    spec:
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: api
+        image: testacrdemo.azurecr.io/basket-api:0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9999
+        env:
+        - name: REDIS_URL
+          value: "redis:6379"
+        - name: DEFAULT_PORT
+          value: "9999"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: basket-api
+spec:
+  selector:
+    app: basket-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9999

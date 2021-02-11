@@ -10,6 +10,7 @@ services:
     depends_on:
       - movies-api
       - recommendation-api
+      - basket-api
   movies-api:
     build: ./src/movies-api
     ports:
@@ -20,6 +21,15 @@ services:
       - "5000:5000"
     environment:
       - MOVIE_API_URL=http://movies-api
+  basket-api:
+    build: ./src/basket-api
+    depends_on: 
+      - redis
+    ports:
+      - "9999:9999"
+    environment:
+      - REDIS_URL=redis:6379
+      - DEFAULT_PORT=9999
   locust-leader:
     image: locustio/locust
     scale: 0 #Change to 1 to run load tests
@@ -35,3 +45,7 @@ services:
     volumes:
       - ./src/load-generator:/mnt/locust
     command: -f /mnt/locust/loadtest.py --worker --master-host locust-leader
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"

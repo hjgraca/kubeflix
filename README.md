@@ -16,7 +16,8 @@ It is composed of 10 microservices written in different languages that talk to e
 | ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | [frontend](./src/frontend)                           | Next.JS            | Exposes an HTTP server to serve the website.|
 | [movies-api](./src/movies-api)                     | C#            | Provides a list of movies from a JSON file.                                                           |                           |
-| [recommendation-api](./src/recommendation-api) | Python        | Recommends other movies  
+| [basket-api](./src/basket-api) | Python        | Saves movies in the basket  
+| [recommendation-api](./src/recommendation-api) | Python        | Recommends other movies 
 | [load testing](./src/load-generator) | Python        | [Locust](https://github.com/locustio/locust) load testing                         
 
 ## Running the application
