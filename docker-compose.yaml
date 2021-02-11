@@ -22,7 +22,7 @@ services:
       - MOVIE_API_URL=http://movies-api
   locust-leader:
     image: locustio/locust
-    scale: 1 #Change to 1 to run load tests
+    scale: 0 #Change to 1 to run load tests
     depends_on: 
       - web
     ports:
