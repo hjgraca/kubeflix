@@ -20,3 +20,18 @@ services:
       - "5000:5000"
     environment:
       - MOVIE_API_URL=http://movies-api
+  locust-leader:
+    image: locustio/locust
+    scale: 1 #Change to 1 to run load tests
+    depends_on: 
+      - web
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./src/load-generator:/mnt/locust
+    command: -f /mnt/locust/loadtest.py --master -H http://web:3000 --headless -u 100 -r 10
+  locust-worker:
+    image: locustio/locust
+    volumes:
+      - ./src/load-generator:/mnt/locust
+    command: -f /mnt/locust/loadtest.py --worker --master-host locust-leader

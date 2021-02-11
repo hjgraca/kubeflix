@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locust-worker
+  template:
+    metadata:
+      labels:
+        app: locust-worker
+    spec:
+      containers:
+      - name: locust-worker
+        image: locustio/locust
+        env:
+          - name: LOCUST_MODE_WORKER
+            value: "true"
+          - name: LOCUST_MASTER_NODE_HOST
+            value: "locust-leader"
+          - name: LOCUST_LOCUSTFILE
+            value: "/locust/loadtest.py"
+        volumeMounts:
+          - name: workdir
+            mountPath: "/locust/"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5557
+      volumes:
+        - name: workdir
+          configMap:
+            name: loadtest-locustfile
+

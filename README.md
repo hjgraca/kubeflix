@@ -1,16 +1,16 @@
 <p align="center">
-<img src="https://github.com/hjgraca/kubeflix/raw/main/resources/main.png" width="300" alt="KUBEFLIX" />
+<img src="resources/main.png" width="300" alt="KUBEFLIX" />
 </p>
 
 ## **KUBEFLIX** 
 Built to demonstrate a microservices application running on Kubernetes. 
 It is composed of 10 microservices written in different languages that talk to each other over http.
 
-**Movie data powered by** <a href="https://www.themoviedb.org/"> <img src="https://raw.githubusercontent.com/hjgraca/kubeflix/main/src/frontend/public/tmdb.svg" width="140"></img></a>
+**Movie data powered by** <a href="https://www.themoviedb.org/"> <img src="src/frontend/public/tmdb.svg" width="140"></img></a>
 
 ## Architecture
 
-<img src="https://github.com/hjgraca/kubeflix/raw/main/resources/Architecture.png"></img>
+<img src="resources/Architecture.png"></img>
 
 | Service                                              | Language      | Description                                                                                                                       |
 | ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |

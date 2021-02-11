@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust-leader
+spec:
+  selector:
+    matchLabels:
+      app: locust-leader
+  template:
+    metadata:
+      labels:
+        app: locust-leader
+    spec:
+      containers:
+      - name: locust-leader
+        image: locustio/locust
+        env:
+          - name: LOCUST_MODE_MASTER
+            value: "true"
+          - name: LOCUST_HEADLESS
+            value: "true"
+          - name: LOCUST_HOST
+            value: "http://frontend:3000"
+          - name: LOCUST_USERS
+            value: "10"
+          - name: LOCUST_SPAWN_RATE
+            value: "10"
+          # - name: LOCUST_EXPECT_WORKERS
+          #   value: "3"
+          - name: LOCUST_LOCUSTFILE
+            value: "/locust/loadtest.py"
+        volumeMounts:
+          - name: workdir
+            mountPath: "/locust/"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5557
+      volumes:
+        - name: workdir
+          configMap:
+            name: loadtest-locustfile
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: locust-leader
+spec:
+  selector:
+    app: locust-leader
+  ports:
+  - port: 5557
+    targetPort: 5557
+
