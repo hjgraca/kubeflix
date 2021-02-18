@@ -4,7 +4,7 @@ import Backend from '../../../components/Backend';
 export default async (req, res) => {
 
   const {
-    query: { basketId },
+    query: { basketId, movieId },
   } = req
 
   if (req.method === 'POST') {
@@ -28,6 +28,18 @@ export default async (req, res) => {
       })
       .catch((error) => {
         res.status(404).end('Error:', error);
+      });
+
+  }
+  else if (req.method === 'DELETE') {
+
+    await Backend.deleteBasketItemFromApi(basketId, movieId)
+      .then(response => response.json())
+      .then(data => {
+        res.status(200).json(data);
+      })
+      .catch((error) => {
+        res.status(500).end('Error:', error);
       });
 
   } else {

@@ -30,6 +30,18 @@ export default function Header(props) {
         }
     }
 
+    async function deleteBasket(movieId) {
+        const basketId = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('basketId='))
+            .split('=')[1];
+        if (basketId) {
+            const response = await Backend.deleteBasketItem(basketId, movieId)
+            const data = await response.json();
+            props.updateBasket(data);
+        }
+    }
+
     useEffect(function effectFunction() {
         getbasket();
     }, []);
@@ -48,14 +60,6 @@ export default function Header(props) {
         setState({ ...state, [anchor]: open });
     };
 
-    function generate(element) {
-        return [0, 1, 2].map((value) =>
-            React.cloneElement(element, {
-                key: value,
-            }),
-        );
-    }
-
     const basket = (basket) => (
         <div style={{ width: 400 }}
             role="presentation">
@@ -72,7 +76,7 @@ export default function Header(props) {
                                         </ListItemAvatar>
                                         <ListItemText primary={item.title} secondary={item.date} />
                                         <ListItemSecondaryAction>
-                                            <IconButton edge="end" aria-label="delete">
+                                            <IconButton edge="end" aria-label="delete" onClick={async () => { await deleteBasket(item.movieId) }}>
                                                 <DeleteIcon />
                                             </IconButton>
                                         </ListItemSecondaryAction>

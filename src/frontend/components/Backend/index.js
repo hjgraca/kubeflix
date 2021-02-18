@@ -61,5 +61,25 @@ export default {
                 body: JSON.stringify(item)
             })
         }
+    },
+    deleteBasketItem: async (basketId, movieId) => {
+        if (basketId) {
+            return await fetch(`${internalBasketApi}/${basketId}?movieId=${movieId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+        }
+    },
+    deleteBasketItemFromApi: async (basketId, movieId) => {
+        if (basketId) {
+            return await fetch(`${basketApiUri}/basket/${basketId}/${movieId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+        }
     }
 }

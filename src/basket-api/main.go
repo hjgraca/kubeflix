@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -65,7 +66,7 @@ func get(w http.ResponseWriter, r *http.Request) {
 }
 
 // AddBasket - Insert basket in Redis
-func AddBasket(baskets []BasketItem, key string) {
+func AddBasket(baskets []BasketItem, key string) Basket {
 	cacheEntry, err := json.Marshal(&baskets)
 	if err != nil {
 		fmt.Println(err)
@@ -77,6 +78,13 @@ func AddBasket(baskets []BasketItem, key string) {
 		fmt.Println(err)
 
 	}
+
+	total := 0
+	for i := 0; i < len(baskets); i++ {
+		b := &baskets[i]
+		total += b.Quantity
+	}
+	return Basket{BasketItems: baskets, Total: total}
 }
 
 func post(w http.ResponseWriter, r *http.Request) {
@@ -122,14 +130,7 @@ func post(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	AddBasket(baskets, key)
-
-	total := 0
-	for i := 0; i < len(baskets); i++ {
-		b := &baskets[i]
-		total += b.Quantity
-	}
-	returnBasket := Basket{BasketItems: baskets, Total: total}
+	returnBasket := AddBasket(baskets, key)
 
 	fmt.Printf("Add movie: %v to basketId: %v\n", basket.MovieID, key)
 	w.Header().Set("Content-Type", "application/json")
@@ -140,14 +141,39 @@ func post(w http.ResponseWriter, r *http.Request) {
 func delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := vars["id"]
+	movieID, err := strconv.Atoi(vars["movieId"])
 
-	err := client.Del(key).Err()
+	cacheEntry, err := client.Get(key).Result()
 	if err != nil {
 		fmt.Println(err)
-
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
+
+	baskets := []BasketItem{}
+	err = json.Unmarshal([]byte(cacheEntry), &baskets)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	baskets = removeIt(movieID, baskets)
+
+	returnBasket := AddBasket(baskets, key)
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`OK`))
+	json.NewEncoder(w).Encode(returnBasket)
+}
+
+func removeIt(movieID int, ssSlice []BasketItem) []BasketItem {
+	for idx, v := range ssSlice {
+		if v.MovieID == movieID {
+			return append(ssSlice[0:idx], ssSlice[idx+1:]...)
+		}
+	}
+	return ssSlice
 }
 
 func main() {
@@ -176,6 +202,7 @@ func main() {
 	r.HandleFunc("/basket/{id}", get).Methods(http.MethodGet)
 	r.HandleFunc("/basket/{id}", post).Methods(http.MethodPost)
 	r.HandleFunc("/basket/{id}", delete).Methods(http.MethodDelete)
+	r.HandleFunc("/basket/{id}/{movieId}", delete).Methods(http.MethodDelete)
 
 	fmt.Println("Starting basket api on port: " + port)
 	log.Fatal(http.ListenAndServe(":"+port, r))
