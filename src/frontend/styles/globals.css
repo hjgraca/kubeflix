@@ -67,11 +67,12 @@ header.black {
   height: 100%;
 }
 
-.header--user {
+.header--basket {
   height: 35px;
+  cursor: pointer;
 }
 
-.header--user img {
+.header--basket img {
   height: 100%;
   border-radius: 3px;
 }
@@ -156,6 +157,8 @@ header.black {
   margin-right: 10px;
   opacity: 1;
   transition: all ease 0.2s;
+  border: none;
+  cursor: pointer;
 }
 
 .featured--mylistbutton:hover,
@@ -170,6 +173,7 @@ header.black {
 .featured--mylistbutton {
   background-color: #333;
   color: #fff;
+  height: 49px;
 }
 
 .featured--genres {

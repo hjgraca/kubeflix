@@ -15,10 +15,19 @@ import (
 
 var client *redis.Client
 
+// BasketItem type
+type BasketItem struct {
+	MovieID    int    `json:"movieId"`
+	Quantity   int    `json:"quantity"`
+	PosterPath string `json:"posterPath"`
+	Title      string `json:"title"`
+	Date       int    `json:"date"`
+}
+
 // Basket type
 type Basket struct {
-	MovieID  int `json:"movieId"`
-	Quantity int `json:"quantity"`
+	BasketItems []BasketItem `json:"basketItems"`
+	Total       int          `json:"total"`
 }
 
 func get(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +43,7 @@ func get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	baskets := []Basket{}
+	baskets := []BasketItem{}
 	err = json.Unmarshal([]byte(cacheEntry), &baskets)
 	if err != nil {
 		fmt.Println(err)
@@ -42,13 +51,21 @@ func get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	total := 0
+	for i := 0; i < len(baskets); i++ {
+		b := &baskets[i]
+		total += b.Quantity
+	}
+
+	returnBasket := Basket{BasketItems: baskets, Total: total}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(baskets)
+	json.NewEncoder(w).Encode(returnBasket)
 }
 
 // AddBasket - Insert basket in Redis
-func AddBasket(baskets []Basket, key string) {
+func AddBasket(baskets []BasketItem, key string) {
 	cacheEntry, err := json.Marshal(&baskets)
 	if err != nil {
 		fmt.Println(err)
@@ -66,10 +83,10 @@ func post(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	key := vars["id"]
-	baskets := []Basket{}
+	baskets := []BasketItem{}
 
 	reqBody, _ := ioutil.ReadAll(r.Body)
-	var basket Basket
+	var basket BasketItem
 	err := json.Unmarshal(reqBody, &basket)
 	if err != nil {
 		fmt.Println(err)
@@ -93,9 +110,9 @@ func post(w http.ResponseWriter, r *http.Request) {
 
 		exists := false
 		for i := 0; i < len(baskets); i++ {
-			attr := &baskets[i]
-			if attr.MovieID == basket.MovieID {
-				attr.Quantity++
+			b := &baskets[i]
+			if b.MovieID == basket.MovieID {
+				b.Quantity++
 				exists = true
 			}
 		}
@@ -107,9 +124,17 @@ func post(w http.ResponseWriter, r *http.Request) {
 
 	AddBasket(baskets, key)
 
+	total := 0
+	for i := 0; i < len(baskets); i++ {
+		b := &baskets[i]
+		total += b.Quantity
+	}
+	returnBasket := Basket{BasketItems: baskets, Total: total}
+
 	fmt.Printf("Add movie: %v to basketId: %v\n", basket.MovieID, key)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(`OK`))
+	json.NewEncoder(w).Encode(returnBasket)
 }
 
 func delete(w http.ResponseWriter, r *http.Request) {

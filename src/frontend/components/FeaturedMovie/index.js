@@ -1,7 +1,8 @@
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
+import Backend from '../Backend';
 
-export default function FeaturedMovie({ item }) {
+export default function FeaturedMovie({ item, updateBasket }) {
 
     let firstDate = new Date(item.release_date);
 
@@ -24,6 +25,29 @@ export default function FeaturedMovie({ item }) {
         });
     }
 
+    if (process.browser) {
+        if (!document.cookie.split(';').some((item) => item.trim().startsWith('basketId='))) {
+            var uid = new Date().getUTCMilliseconds();
+            document.cookie = "basketId=" + uid;
+        }
+    }
+
+    const addToBasket = async (event) => {
+        event.preventDefault();
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('basketId='))
+            .split('=')[1];
+
+        await Backend.addToBasket(cookieValue, item).then(response => response.json())
+            .then(data => {
+                updateBasket(data)
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    };
+
     return (
         <section className="featured" style={{
             backgroundSize: 'cover',
@@ -41,7 +65,8 @@ export default function FeaturedMovie({ item }) {
                     <div className="featured--description">{descr}</div>
                     <div className="featured--buttons">
                         <a href={`/movie/${item.id}`} className="featured--watchbutton">► Rent now</a>
-                        <a href={`/list/add/${item.id}`} className="featured--mylistbutton">+ Add to cart</a>
+                        {/* <a href={`/list/add/${item.id}`} className="featured--mylistbutton">+ Add to cart</a> */}
+                        <button onClick={addToBasket} className="featured--mylistbutton">+ Add to basket</button>
                     </div>
                     <div className="featured--genres">Genre: <strong> {genres.join(', ')} </strong></div>
                     <div className="featured--cast">

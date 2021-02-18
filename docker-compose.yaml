@@ -7,6 +7,7 @@ services:
     environment:
       - MoviesApiUri=http://movies-api
       - RecommendationApiUri=http://recommendation-api:5000
+      - BasketApiUri=http://localhost:9999
     depends_on:
       - movies-api
       - recommendation-api

@@ -1,9 +1,9 @@
 import Tmdb from '../components/Backend';
 import Body from '../components/Body';
 
-export default function Home({ movieList, featuredData }) {
+export default function Home(props) {
   return (
-    <Body movieList={movieList} featuredData={featuredData} ></Body>
+    <Body movieList={props.movieList} featuredData={props.featuredData} ></Body>
   )
 }
 
@@ -17,5 +17,7 @@ export async function getServerSideProps() {
 
   const featuredData = await Tmdb.getMovieInfo(chosen.id);
 
-  return { props: { movieList, featuredData } }
+  return {
+    props: { movieList, featuredData }
+  }
 }

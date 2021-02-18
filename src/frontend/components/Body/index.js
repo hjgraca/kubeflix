@@ -3,8 +3,10 @@ import FeaturedMovie from '../FeaturedMovie';
 import Header from '../Header';
 import React, { useEffect, useState } from 'react';
 
-export default function Body({ featuredData, movieList }) {
+export default function Body(props) {
+
     const [blackHeader, setblackHeader] = useState(false);
+    const [basket, updateBasket] = useState(null);
 
     useEffect(() => {
         const scrollListener = () => {
@@ -25,14 +27,14 @@ export default function Body({ featuredData, movieList }) {
     return (
         <div className="page">
 
-            <Header black={blackHeader} />
+            <Header black={blackHeader} basket={basket} updateBasket={updateBasket} />
 
-            {featuredData &&
-                <FeaturedMovie item={featuredData} />
+            {props.featuredData &&
+                <FeaturedMovie item={props.featuredData} updateBasket={updateBasket} />
             }
 
             <section className="lists">
-                {movieList.map((item, key) => (
+                {props.movieList.map((item, key) => (
                     <MovieRow key={key} title={item.title} items={item.items}></MovieRow>
                 ))
 
@@ -42,7 +44,7 @@ export default function Body({ featuredData, movieList }) {
                 <p>Movie data powered by <a href="https://www.themoviedb.org/"> <img src="/tmdb.svg" style={{ width: "140px" }}></img></a></p>
             </footer>
 
-            {movieList.length <= 0 &&
+            {props.movieList.length <= 0 &&
                 <div className="loading">
                     <img src="https://cdn.lowgif.com/small/0534e2a412eeb281-the-counterintuitive-tech-behind-netflix-s-worldwide.gif" alt="loading"></img>
                 </div>
