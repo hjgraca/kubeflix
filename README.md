@@ -25,6 +25,11 @@ It is composed of 10 microservices written in different languages that talk to e
 ### Locally with docker-compose
 On the root folder of the project you will find the [docker-compose.yaml](./docker-compose.yaml) file. Run the command ```docker-compose up``` to run the full application locally.
 
+#### Building images locally and pushing to a regsitry 
+Update the image property in [docker-compose.yaml](./docker-compose.yaml) file and run ```docker-compose build```. 
+
+Pushing images to the registry ```docker-compose push```
+
 ### Kubernetes
 To run the simple example on the [kubernetes-manifests/simple](./src/kubernetes-manifests/simple) folder.
 

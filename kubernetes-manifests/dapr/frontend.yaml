@@ -30,6 +30,8 @@ spec:
           value: "http://localhost:3500/v1.0/invoke/movies-api/method"
         - name: RecommendationApiUri
           value: "http://localhost:3500/v1.0/invoke/recommendation-api/method"
+        - name: BasketApiUri
+          value: "http://localhost:3500/v1.0/invoke/basket-api/method"
         resources:
           requests:
             cpu: 100m

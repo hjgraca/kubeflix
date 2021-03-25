@@ -29,7 +29,7 @@ spec:
           value: "http://movies-api"
         - name: RecommendationApiUri
           value: "http://recommendation-api"
-        - name: basketApiUri
+        - name: BasketApiUri
           value: "http://basket-api"
         resources:
           requests:

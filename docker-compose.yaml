@@ -2,6 +2,7 @@ version: "3.9"
 services:
   web:
     build: ./src/frontend
+    image: testacrdemo.azurecr.io/frontend:0.1
     ports:
       - "8888:3000"
     environment:
@@ -14,16 +15,19 @@ services:
       - basket-api
   movies-api:
     build: ./src/movies-api
+    image: testacrdemo.azurecr.io/movies-api:0.1
     ports:
       - "8088:80"
   recommendation-api:
     build: ./src/recommendation-api
+    image: testacrdemo.azurecr.io/recommendation-api:0.1
     ports:
       - "5000:5000"
     environment:
       - MOVIE_API_URL=http://movies-api
   basket-api:
     build: ./src/basket-api
+    image: testacrdemo.azurecr.io/basket-api:0.1
     depends_on: 
       - redis
     ports:
