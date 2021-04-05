@@ -10,6 +10,8 @@ var tags = {
   projectCode: 'xyz'
 }
 
+var subnetId = vn.outputs.subnetId
+
 resource rg 'Microsoft.Resources/resourceGroups@2020-06-01' = {
   name: resourceGroupName
   location: location
@@ -23,12 +25,30 @@ module vn 'vnet.bicep' = {
   scope: rg
 }
 
+module identity 'identity.bicep' = {
+  name: 'identity'
+  scope: rg
+}
+
+module kv 'keyvault.bicep' = {
+  name: 'kv'
+  scope: rg
+  params: {
+    subnetId: subnetId
+    kvIdentityObjectId: identity.outputs.kvIdentityObjectId
+  }
+}
+
 module aks 'aks.bicep' = {
   name: 'aks'
   scope: rg
   params: {
     tags: tags
-    subnetId: vn.outputs.subnetId
+    subnetId: subnetId
+    kvUAMIResourceId: identity.outputs.kvIdentityResourceId
+    kvUAMIClientId: identity.outputs.kvIdentityClientId
+    kvUAMIObjectId: identity.outputs.kvIdentityObjectId
+    aksUAMIResourceId: identity.outputs.aksIdentityResourceId
   }
 }
 

@@ -18,11 +18,15 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 export default function Header(props) {
 
-    async function getbasket() {
-        const basketId = document.cookie
+    function getCookieBasket() {
+        return document.cookie
             .split('; ')
             .find(row => row.startsWith('basketId='))
             .split('=')[1];
+    }
+
+    async function getbasket() {
+        var basketId = getCookieBasket();
         if (basketId) {
             const response = await Backend.getBasket(basketId)
             const data = await response.json();
@@ -31,14 +35,20 @@ export default function Header(props) {
     }
 
     async function deleteBasket(movieId) {
-        const basketId = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('basketId='))
-            .split('=')[1];
+        var basketId = getCookieBasket();
         if (basketId) {
             const response = await Backend.deleteBasketItem(basketId, movieId)
             const data = await response.json();
             props.updateBasket(data);
+        }
+    }
+
+    async function checktout() {
+        var basketId = getCookieBasket();
+        if (basketId) {
+            await Backend.checkout(basketId)
+            props.updateBasket({ basketItems: [] });
+            setState({ ...state, ['right']: false });
         }
     }
 
@@ -108,7 +118,7 @@ export default function Header(props) {
                 onClose={toggleDrawer("right", false)}>
                 {basket(props.basket)}
                 <Button
-                    onClick={toggleDrawer('right', false)}
+                    onClick={async () => { await checktout() }}
                     variant="contained"
                     color="secondary"
                     size="large"

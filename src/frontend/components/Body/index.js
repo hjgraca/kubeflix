@@ -30,18 +30,18 @@ export default function Body(props) {
             <Header black={blackHeader} basket={basket} updateBasket={updateBasket} />
 
             {props.featuredData &&
-                <FeaturedMovie item={props.featuredData} updateBasket={updateBasket} />
+                <FeaturedMovie item={props.featuredData} updateBasket={updateBasket} ads={props.ads} />
             }
 
             <section className="lists">
                 {props.movieList.map((item, key) => (
+                    item.items.length > 0 &&
                     <MovieRow key={key} title={item.title} items={item.items}></MovieRow>
-                ))
-
-                }
+                ))}
             </section>
             <footer>
                 <p>Movie data powered by <a href="https://www.themoviedb.org/"> <img src="/tmdb.svg" style={{ width: "140px" }}></img></a></p>
+                <p>Server: {process.env.HOSTNAME}</p>
             </footer>
 
             {props.movieList.length <= 0 &&

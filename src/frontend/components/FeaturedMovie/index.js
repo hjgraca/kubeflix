@@ -2,7 +2,7 @@ import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Backend from '../Backend';
 
-export default function FeaturedMovie({ item, updateBasket }) {
+export default function FeaturedMovie({ item, updateBasket, ads }) {
 
     let firstDate = new Date(item.release_date);
 
@@ -68,6 +68,9 @@ export default function FeaturedMovie({ item, updateBasket }) {
                         {/* <a href={`/list/add/${item.id}`} className="featured--mylistbutton">+ Add to cart</a> */}
                         <button onClick={addToBasket} className="featured--mylistbutton">+ Add to basket</button>
                     </div>
+                    {ads.desc != undefined &&
+                        <div className="featured--info"><strong>🎁 {ads.desc}</strong></div>
+                    }
                     <div className="featured--genres">Genre: <strong> {genres.join(', ')} </strong></div>
                     <div className="featured--cast">
                         {cast.length > 0 && cast.map((item, key) => (
@@ -78,6 +81,7 @@ export default function FeaturedMovie({ item, updateBasket }) {
                             </div>
                         ))}
                     </div>
+
                 </div>
             </div>
         </section>

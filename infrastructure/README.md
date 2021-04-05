@@ -2,7 +2,8 @@
 
 ### Bicep (https://github.com/Azure/bicep)
 
-Run ```bicep build main.bicep```, this command will generate the ARM template
-Run ```az deployment sub create -f .\main.json -l westeurope -c```
+Azure cli > 2.20 required
 
-```-c``` is what-if mode
+Run ```az deployment sub create -f .\main.bicep -l westeurope -c```
+
+Remove ```-c``` if you don't want the what-if mode

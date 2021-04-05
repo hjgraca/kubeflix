@@ -1,35 +1,36 @@
 // params
 @description('The DNS prefix to use with hosted Kubernetes API server FQDN.')
 param dnsPrefix string = 'cl01'
-
 @description('The name of the Managed Cluster resource.')
 param clusterName string = 'aks101'
-
 @minValue(1)
 @maxValue(50)
 @description('The number of nodes for the cluster. 1 Node is enough for Dev/Test and minimum 3 nodes, is recommended for Production')
 param agentCount int = 1
-
 @description('The size of the Virtual Machine.')
 param agentVMSize string = 'Standard_DS3_v2'
-
 param tags object
 param subnetId string
+param kvUAMIResourceId string
+param kvUAMIClientId string
+param kvUAMIObjectId string
+param aksUAMIResourceId string
 
 // vars
 var kubernetesVersion = '1.20.2'
-
 var nodeResourceGroup = 'rg-${dnsPrefix}-${clusterName}'
-
 var agentPoolName = 'agentpool01'
 
 // Azure kubernetes service
-resource aks 'Microsoft.ContainerService/managedClusters@2020-09-01' = {
+resource aks 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
   name: clusterName
   location: resourceGroup().location
   tags: tags
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${aksUAMIResourceId}': {}
+    }
   }
   properties: {
     kubernetesVersion: kubernetesVersion
@@ -59,10 +60,25 @@ resource aks 'Microsoft.ContainerService/managedClusters@2020-09-01' = {
     servicePrincipalProfile: {
       clientId: 'msi'
     }
+    podIdentityProfile: {
+      enabled: true
+      userAssignedIdentities: [
+        {
+          name: 'kv-identity'
+          namespace: 'default'
+          identity: {
+            resourceId: kvUAMIResourceId
+            clientId: kvUAMIClientId
+            objectId: kvUAMIObjectId
+          }
+        }
+      ]
+    }
     nodeResourceGroup: nodeResourceGroup
     networkProfile: {
       networkPlugin: 'azure'
       loadBalancerSku: 'standard'
+      networkPolicy: 'calico'
     }
   }
 }

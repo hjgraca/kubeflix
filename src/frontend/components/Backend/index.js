@@ -6,6 +6,8 @@ const moviesApiUri = process.env.MoviesApiUri;
 const recommendationApiUri = process.env.RecommendationApiUri;
 const internalBasketApi = "/api/basket";
 const basketApiUri = process.env.BasketApiUri;
+const adsApiUri = process.env.AdsApiUri;
+const checkoutApiUri = process.env.CheckoutApiUri;
 
 export default {
     getHomeList: async () => {
@@ -13,25 +15,38 @@ export default {
             {
                 slug: 'popular',
                 title: "Popular",
-                items: await basicFecth(`${moviesApiUri}/movies`)
+                items: await basicFecth(`${moviesApiUri}/movies`).catch(() => { return []; })
             },
             {
                 slug: 'recommended',
                 title: "Recommended for you",
-                items: await basicFecth(`${recommendationApiUri}/recommendations`)
+                items: await basicFecth(`${recommendationApiUri}/recommendations`).catch(() => { return []; })
             }
         ]
     },
-
     getMovieInfo: async (movieId) => {
         if (movieId) {
             return await basicFecth(`${moviesApiUri}/movies/${movieId}`)
         }
         return {};
     },
+    getAds: async () => {
+        return await basicFecth(`${adsApiUri}`).catch(() => { return {}; })
+    },
     getBasket: async (basketId) => {
         if (basketId) {
             return await fetch(`${internalBasketApi}/${basketId}`)
+        }
+    },
+    checkout: async (basketId) => {
+        if (basketId) {
+            return await fetch(`${checkoutApiUri}/checkout`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(basketId)
+            })
         }
     },
     addToBasket: async (basketId, item) => {
