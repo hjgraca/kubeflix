@@ -2,8 +2,8 @@
 module.exports = {
   title: 'kubeflix',
   tagline: 'Built to demonstrate a microservices application running on Kubernetes. It is composed of 10 microservices written in different languages that talk to each other over http.',
-  url: 'http://kubeflix.westeurope.cloudapp.azure.com/',
-  baseUrl: '/',
+  url: 'https://hjgraca.github.io',
+  baseUrl: '/kubeflix/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',

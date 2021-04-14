@@ -178,11 +178,6 @@ func removeIt(movieID int, ssSlice []BasketItem) []BasketItem {
 
 func main() {
 
-	port := os.Getenv("DEFAULT_PORT")
-	if port == "" {
-		port = "9999"
-	}
-
 	redisURL := os.Getenv("REDIS_URL")
 	if redisURL == "" {
 		redisURL = "localhost:6379"
@@ -204,6 +199,6 @@ func main() {
 	r.HandleFunc("/basket/{id}", delete).Methods(http.MethodDelete)
 	r.HandleFunc("/basket/{id}/{movieId}", delete).Methods(http.MethodDelete)
 
-	fmt.Println("Starting basket api on port: " + port)
-	log.Fatal(http.ListenAndServe(":"+port, r))
+	fmt.Println("Starting basket api")
+	log.Fatal(http.ListenAndServe(":80", r))
 }

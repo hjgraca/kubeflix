@@ -4,11 +4,13 @@ services:
     build: ./src/frontend
     image: testacrdemo.azurecr.io/frontend:0.1
     ports:
-      - "8888:3000"
+      - "6001:3000"
     environment:
       - MoviesApiUri=http://movies-api
       - RecommendationApiUri=http://recommendation-api
       - BasketApiUri=http://basket-api
+      - CheckoutApiUri=http://checkout-api
+      - AdsApiUri=http://ads-api
     depends_on:
       - movies-api
       - recommendation-api
@@ -17,47 +19,46 @@ services:
     build: ./src/movies-api
     image: testacrdemo.azurecr.io/movies-api:0.1
     ports:
-      - "8088:80"
+      - "6002:80"
   recommendation-api:
     build: ./src/recommendation-api
     image: testacrdemo.azurecr.io/recommendation-api:0.2
     ports:
-      - "5000:80"
+      - "6003:80"
     environment:
       - MOVIE_API_URL=http://movies-api
   ads-api:
     build: ./src/ad-api
     image: testacrdemo.azurecr.io/ad-api:0.1
     ports:
-      - "5001:80"
+      - "6004:80"
   basket-api:
     build: ./src/basket-api
     image: testacrdemo.azurecr.io/basket-api:0.1
     depends_on:
       - redis
     ports:
-      - "9999:9999"
+      - "6005:80"
     environment:
       - REDIS_URL=redis:6379
-      - DEFAULT_PORT=9999
   checkout-api:
     build: ./src/checkout-api
     image: testacrdemo.azurecr.io/checkout-api:0.1
     depends_on:
       - redis
     ports:
-      - "5002:80"
+      - "6006:80"
     environment:
       - REDIS_URL=redis
       - NATS_URL=nats://nats:4222
-      - NATS_SUBJECT=ORDERS
+      - ORDER_SUBJECT=ORDERS
   locust-leader:
     image: locustio/locust
     scale: 0 #Change to 1 to run load tests
     depends_on:
       - web
     ports:
-      - "8089:8089"
+      - "6007:8089"
     volumes:
       - ./src/load-generator:/mnt/locust
     command: -f /mnt/locust/loadtest.py --master -H http://web:3000 --headless -u 100 -r 10
@@ -72,18 +73,21 @@ services:
       - "6379:6379"
   nats:
     image: nats-streaming
-    ports:
-      - "4222:4222"
   order-processor:
     build: ./src/order-processor
     image: testacrdemo.azurecr.io/order-processor:0.1
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 5; done; /order-processor'
     depends_on:
       - nats
       - db
     environment:
       - NATS_URL=nats://nats:4222
-      - NATS_SUBJECT=ORDERS
-      - NATS_COMPLETE_SUBJECT=ORDER_PROCESSED
+      - ORDER_SUBJECT=ORDERS
+      - ORDER_COMPLETE_SUBJECT=ORDER_PROCESSED
+      - POSTGRESQL_USER=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_SERVER=db
+      - POSTGRESQL_DB=kubeflix
   db:
     image: postgres
     ports:
@@ -94,3 +98,26 @@ services:
       - POSTGRES_DB=kubeflix
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+  notification-service:
+    build: ./src/notification-service
+    image: testacrdemo.azurecr.io/notification-service:0.1
+    depends_on:
+      - nats
+    environment:
+      - NATS_URL=nats://nats:4222
+      - ORDER_COMPLETE_SUBJECT=ORDER_PROCESSED
+      - ORDER_SHIPPED_SUBJECT=ORDER_SHIPPED
+  shipping-service:
+    build: ./src/shipping-service
+    image: testacrdemo.azurecr.io/shipping-service:0.1
+    depends_on:
+      - nats
+      - db
+    environment:
+      - NATS_URL=nats://nats:4222
+      - ORDER_COMPLETE_SUBJECT=ORDER_PROCESSED
+      - ORDER_SHIPPED_SUBJECT=ORDER_SHIPPED
+      - POSTGRESQL_USER=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_SERVER=db
+      - POSTGRESQL_DB=kubeflix

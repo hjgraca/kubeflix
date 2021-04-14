@@ -7,7 +7,8 @@ const recommendationApiUri = process.env.RecommendationApiUri;
 const internalBasketApi = "/api/basket";
 const basketApiUri = process.env.BasketApiUri;
 const adsApiUri = process.env.AdsApiUri;
-const checkoutApiUri = process.env.CheckoutApiUri;
+const checkoutApiUri = process.env.CheckoutApiUri + "/checkout";
+const internalCheckoutApiUri = "/api/checkout";
 
 export default {
     getHomeList: async () => {
@@ -38,9 +39,9 @@ export default {
             return await fetch(`${internalBasketApi}/${basketId}`)
         }
     },
-    checkout: async (basketId) => {
+    checkout: async (basketId, api) => {
         if (basketId) {
-            return await fetch(`${checkoutApiUri}/checkout`, {
+            return await fetch(api ? checkoutApiUri : internalCheckoutApiUri, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

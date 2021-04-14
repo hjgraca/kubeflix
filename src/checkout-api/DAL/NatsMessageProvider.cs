@@ -19,7 +19,7 @@ namespace checkout_api.DAL
         {
             var opts = StanOptions.GetDefaultOptions();
             var url = Environment.GetEnvironmentVariable("NATS_URL");
-            var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT");
+            var subject = Environment.GetEnvironmentVariable("ORDER_SUBJECT");
 
             if (!string.IsNullOrWhiteSpace(url))
                 opts.NatsURL = url;
