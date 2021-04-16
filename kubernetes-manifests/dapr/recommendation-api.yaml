@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: api
-        image: testacrdemo.azurecr.io/recommendation-api:0.1
+        image: hjgraca/recommendation-api:0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 5000

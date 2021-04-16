@@ -20,7 +20,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: api
-        image: testacrdemo.azurecr.io/frontend:0.1
+        image: hjgraca/frontend:0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
