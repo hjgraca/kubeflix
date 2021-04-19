@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: basket-api
+  name: ads-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: basket-api
+      app: ads-api
   template:
     metadata:
       labels:
-        app: basket-api
+        app: ads-api
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
       - name: api
-        image: hjgraca/basket-api:0.1
+        image: hjgraca/ad-api:0.1
         imagePullPolicy: Always
         env:
         - name: REDIS_URL
@@ -32,10 +32,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: basket-api
+  name: ads-api
 spec:
   selector:
-    app: basket-api
+    app: ads-api
   ports:
   - protocol: TCP
     port: 80
