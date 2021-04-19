@@ -1,26 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: basket-api
+  name: checkout-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: basket-api
+      app: checkout-api
   template:
     metadata:
       labels:
-        app: basket-api
+        app: checkout-api
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
       - name: api
-        image: hjgraca/basket-api:0.1
+        image: hjgraca/checkout-api:0.1
         imagePullPolicy: Always
         env:
         - name: REDIS_URL
           value: "redis:6379"
+        - name: NATS_URL
+          value: "nats://nats:4222"
+        - name: ORDER_SUBJECT
+          value: "ORDERS"
         resources:
           requests:
             cpu: 100m
@@ -32,10 +36,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: basket-api
+  name: checkout-api
 spec:
   selector:
-    app: basket-api
+    app: checkout-api
   ports:
   - protocol: TCP
     port: 80

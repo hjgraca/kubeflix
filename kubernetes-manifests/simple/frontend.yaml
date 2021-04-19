@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -31,6 +31,10 @@ spec:
           value: "http://recommendation-api"
         - name: BasketApiUri
           value: "http://basket-api"
+        - name: CheckoutApiUri
+          value: "http://checkout-api"
+        - name: AdsApiUri
+          value: "http://ads-api"
         resources:
           requests:
             cpu: 100m
