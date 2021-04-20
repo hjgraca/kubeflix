@@ -1,0 +1,38 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  pull_request:
+    branches: [ main ]
+  
+  workflow_dispatch:
+  
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      components: ${{ steps.filter.outputs.changes }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          ad-api:
+            - 'src/ad-api/**'
+          frontend:
+            - 'src/frontend/**'
+  build:
+    needs: changes
+    strategy:
+      matrix:
+        # Parse JSON array containing names of all filters matching any of changed files
+        # e.g. ['frontend', 'basket-api'] if both components folders contains changes
+        component: ${{ fromJSON(needs.changes.outputs.components) }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Component: ${{ matrix.component }}"
+      
