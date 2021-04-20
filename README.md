@@ -28,7 +28,7 @@ It is composed of 10 microservices written in different languages that talk to e
 ## Platform architecture
 <img src="resources/platform.png"></img>
 
-## Workshop
+## Workshop and Tutorials
 Workshop and tutorials available [here](https://hjgraca.github.io/kubeflix/docs/)
 
 ## Running the application

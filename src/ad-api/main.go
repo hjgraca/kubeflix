@@ -27,8 +27,16 @@ func get(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(ad)
 }
 
+func healthChek(w http.ResponseWriter, r *http.Request) {
+
+	fmt.Printf("Ad api healthy!")
+	w.WriteHeader(200)
+}
+
 func handleRequests() {
 	http.HandleFunc("/", get)
+	http.HandleFunc("/healthz", healthChek)
+	http.HandleFunc("/healthx", healthChek)
 	log.Fatal(http.ListenAndServe(":80", nil))
 }
 
