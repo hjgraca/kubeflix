@@ -4,7 +4,11 @@ name: CI
 
 # Controls when the action will run. 
 on:
-  pull_request:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
     branches: [ main ]
   
   workflow_dispatch:
@@ -22,8 +26,7 @@ jobs:
         filters: |
           ad-api:
             - 'src/ad-api/**'
-          frontend:
-            - 'src/frontend/**'
+
   build:
     needs: changes
     strategy:
@@ -32,7 +35,13 @@ jobs:
         # e.g. ['frontend', 'basket-api'] if both components folders contains changes
         component: ${{ fromJSON(needs.changes.outputs.components) }}
     runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Component: ${{ matrix.component }}"
+    steps:   
+      - uses: amannn/action-semantic-pull-request@v3.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Label PRs
+        uses: adamzolyak/monorepo-pr-labeler-action@patching
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_DIRS: 'src'
       
