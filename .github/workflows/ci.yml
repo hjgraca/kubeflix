@@ -74,21 +74,22 @@ jobs:
           push: false
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.component }}:${{ github.sha }}
           
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        if: ${{ github.event.push }}
-        with:
-          context: src/${{ matrix.component }}
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.component }}:${{ github.sha }}
+      # - name: Build and push
+      #   uses: docker/build-push-action@v2
+      #   if: ${{ github.event.push }}
+      #   with:
+      #     context: src/${{ matrix.component }}
+      #     push: true
+      #     tags: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.component }}:${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ secrets.DOCKER_USERNAME }}/${{ matrix.component }}:${{ github.sha }}'
-          format: 'table'
-          exit-code: '1'
+          scan-type: 'fs'
           ignore-unfixed: true
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           scan-ref: src/${{ matrix.component }}
