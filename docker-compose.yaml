@@ -2,7 +2,7 @@ version: "3.9"
 services:
   web:
     build: ./src/frontend
-    image: hjgraca/frontend:0.1
+    image: ${REPO}/frontend:${TAG}
     ports:
       - "6001:3000"
     environment:
@@ -17,24 +17,24 @@ services:
       - basket-api
   movies-api:
     build: ./src/movies-api
-    image: hjgraca/movies-api:0.1
+    image: ${REPO}/movies-api:${TAG}
     ports:
       - "6002:80"
   recommendation-api:
     build: ./src/recommendation-api
-    image: hjgraca/recommendation-api:0.2
+    image: ${REPO}/recommendation-api:${TAG}
     ports:
       - "6003:80"
     environment:
       - MOVIE_API_URL=http://movies-api
   ads-api:
     build: ./src/ad-api
-    image: hjgraca/ad-api:0.1
+    image: ${REPO}/ad-api:${TAG}
     ports:
       - "6004:80"
   basket-api:
     build: ./src/basket-api
-    image: hjgraca/basket-api:0.1
+    image: ${REPO}/basket-api:${TAG}
     depends_on:
       - redis
     ports:
@@ -43,7 +43,7 @@ services:
       - REDIS_URL=redis:6379
   checkout-api:
     build: ./src/checkout-api
-    image: hjgraca/checkout-api:0.1
+    image: ${REPO}/checkout-api:${TAG}
     depends_on:
       - redis
     ports:
@@ -75,7 +75,7 @@ services:
     image: nats-streaming
   order-processor:
     build: ./src/order-processor
-    image: hjgraca/order-processor:0.1
+    image: ${REPO}/order-processor:${TAG}
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 5; done; /order-processor'
     depends_on:
       - nats
@@ -100,7 +100,7 @@ services:
       - POSTGRES_PASSWORD=postgres
   notification-service:
     build: ./src/notification-service
-    image: hjgraca/notification-service:0.1
+    image: ${REPO}/notification-service:${TAG}
     depends_on:
       - nats
     environment:
@@ -109,7 +109,7 @@ services:
       - ORDER_SHIPPED_SUBJECT=ORDER_SHIPPED
   shipping-service:
     build: ./src/shipping-service
-    image: hjgraca/shipping-service:0.1
+    image: ${REPO}/shipping-service:${TAG}
     depends_on:
       - nats
       - db

@@ -28,18 +28,25 @@ It is composed of 10 microservices written in different languages that talk to e
 ## Platform architecture
 <img src="resources/platform.png"></img>
 
-## Workshop
+## Workshop and Tutorials
 Workshop and tutorials available [here](https://hjgraca.github.io/kubeflix/docs/)
 
 ## Running the application
 
 ### Locally with docker-compose
-On the root folder of the project you will find the [docker-compose.yaml](./docker-compose.yaml) file. Run the command ```docker-compose up``` to run the full application locally.
+On the root folder of the project you will find the [docker-compose.yaml](./docker-compose.yaml) file. 
 
-#### Building images locally and pushing to a regsitry 
-Update the image property in [docker-compose.yaml](./docker-compose.yaml) file and run ```docker-compose build```. 
+To optionally build from source (you will need a newish version of Docker to do this) use Docker Compose. Optionally edit the `.env` file to specify an alternative image registry and version tag; see the official [documentation](https://docs.docker.com/compose/env-file/) for more information.
 
-Pushing images to the registry ```docker-compose push```
+```shell
+$ docker-compose build
+```
+
+If you modified the `.env` file and changed the image registry, you need to push the images to that registry
+
+```shell
+$ docker-compose push
+```
 
 ### Kubernetes
 To run the simple example on the [kubernetes-manifests/simple](./src/kubernetes-manifests/simple) folder.
