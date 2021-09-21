@@ -90,6 +90,8 @@ jobs:
       - name: Release Drafter
         uses: release-drafter/release-drafter@v5
         if: ${{ github.event_name == 'push' }}
+        with:
+          disable-autolabeler: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: Bump version and push tag
