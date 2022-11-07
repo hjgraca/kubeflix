@@ -29,7 +29,7 @@ It is composed of 10 microservices written in different languages that talk to e
 <img src="resources/platform.png"></img>
 
 ## Workshop and Tutorials
-Workshop and tutorials available [here](https://hjgraca.github.io/kubeflix/docs/)
+Workshop and tutorials available [here](https://hjgraca.github.io/kubeflix/docs/) (TODO)
 
 ## Running the application
 
