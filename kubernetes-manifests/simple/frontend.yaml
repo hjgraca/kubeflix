@@ -71,7 +71,7 @@ spec:
     port: 3000
     targetPort: 3000
 ---
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: frontend-pdb
